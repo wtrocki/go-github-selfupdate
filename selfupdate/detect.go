@@ -100,6 +100,9 @@ func findReleaseAndAsset(rels []*github.RepositoryRelease,
 				suffix = fmt.Sprintf("%s%c%s.exe%s", runtime.GOOS, sep, runtime.GOARCH, ext)
 				suffixes = append(suffixes, suffix)
 			}
+			if runtime.GOOS == "darwin" {
+				suffixes = append(suffixes, fmt.Sprintf("%s%c%s%s", "macOS", sep, runtime.GOARCH, ext))
+			}
 		}
 	}
 
@@ -109,7 +112,7 @@ func findReleaseAndAsset(rels []*github.RepositoryRelease,
 
 	// Find the latest version from the list of releases.
 	// Returned list from GitHub API is in the order of the date when created.
-	//   ref: https://github.com/rhysd/go-github-selfupdate/issues/11
+	//   ref: https://github.com/wtrocki/go-github-selfupdate/issues/11
 	for _, rel := range rels {
 		if a, v, ok := findAssetFromRelease(rel, suffixes, targetVersion, filters); ok {
 			// Note: any version with suffix is less than any version without suffix.
